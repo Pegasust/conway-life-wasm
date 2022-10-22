@@ -1,41 +1,29 @@
-[package]
-name = "wasm-game-of-life"
-version = "0.1.0"
-authors = ["pegasust <pegasucksgg@gmail.com>"]
-edition = "2018"
+# [package]
+# name = "wasm-game-of-life"
+# version = "0.1.0"
+# authors = ["pegasust <pegasucksgg@gmail.com>"]
+# edition = "2018"
+#
+[workspace]
+members = [
+    "packages/*",
+    "apps/*",
+    "wasm-tests"
+]
 
-[lib]
-crate-type = ["cdylib", "rlib"]
+# [profile.release]
+# # Tell `rustc` to optimize for small code size.
+# opt-level = "s"
 
-[features]
-default = ["console_error_panic_hook"]
-
-[dependencies]
-wasm-bindgen = "0.2.63"
-
-# The `console_error_panic_hook` crate provides better debugging of panics by
-# logging them with `console.error`. This is great for development, but requires
-# all the `std::fmt` and `std::panicking` infrastructure, so isn't great for
-# code size when deploying.
-console_error_panic_hook = { version = "0.1.6", optional = true }
-
-# `wee_alloc` is a tiny allocator for wasm that is only ~1K in code size
-# compared to the default allocator's ~10K. It is slower than the default
-# allocator, however.
-wee_alloc = { version = "0.4.5", optional = true }
-
-[dev-dependencies]
-cargo-edit = "0.11.5"
-cargo-generate = "0.16.0"
-cargo-run-script = "0.1.0"
-wasm-bindgen-test = "0.3.13"
-
-[profile.release]
-# Tell `rustc` to optimize for small code size.
-opt-level = "s"
-
-[package.metadata.scripts]
-hello = "echo hello"
-test = "cargo test"
-build = "wasm-pack build --target web --release"
-dev = "cargo watch"
+# [package.metadata.scripts]
+# hello = "echo hello"
+# test = "cargo test"
+# pack-test = "wasm-pack test --firefox packages/web-app"
+# # helper that puts web-app to our dist folder: pkg
+# publish-server = "mkdir -p pkg && cp -r packages/web-app/pkg/* pkg/ && cp -r public/* pkg/"
+# build = "wasm-pack build --target web --out-name web-app --release packages/web-app && cargo run-script publish-server"
+# build-dev = "wasm-pack build --target web --out-name web-app --dev packages/web-app && cargo run-script publish-server"
+# dev = "cargo watch -x 'run-script build-dev'"
+# # serves the content of pkg/web-app as a server
+# serve = "cargo run -p server"
+# serve-watch = "cargo watch -w apps/server -x 'run -p server'"

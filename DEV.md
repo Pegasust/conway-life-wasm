@@ -55,6 +55,7 @@ Finished, status of exit code: 0
 
 ## Idea (most recent to least recent)
 
+- [x] dev.md: cargo-watch
 - [x] dev.md: [cargo-edit](https://github.com/killercup/cargo-edit)
 - [x] dev.md: cargo-generate
 - [x] dev.md: [cargo-run-script](https://github.com/JoshMcguigan/cargo-run-script)
@@ -62,6 +63,7 @@ Finished, status of exit code: 0
 
 # Done (most recent to least recent)
 
+- [x] dev.md: cargo-watch
 - [x] dev.md for initial dev lifecycle
 - [x] dev.md: [cargo-run-script](https://github.com/JoshMcguigan/cargo-run-script)
 - [x] dev.md: [cargo-edit](https://github.com/killercup/cargo-edit)
