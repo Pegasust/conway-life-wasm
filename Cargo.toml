@@ -25,8 +25,17 @@ console_error_panic_hook = { version = "0.1.6", optional = true }
 wee_alloc = { version = "0.4.5", optional = true }
 
 [dev-dependencies]
+cargo-edit = "0.11.5"
+cargo-generate = "0.16.0"
+cargo-run-script = "0.1.0"
 wasm-bindgen-test = "0.3.13"
 
 [profile.release]
 # Tell `rustc` to optimize for small code size.
 opt-level = "s"
+
+[package.metadata.scripts]
+hello = "echo hello"
+test = "cargo test"
+build = "wasm-pack build --target web --release"
+dev = "cargo watch"

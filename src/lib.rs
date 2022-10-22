@@ -10,6 +10,7 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[wasm_bindgen]
 extern {
+    /// This is basically a binding to JS's window.alert function
     fn alert(s: &str);
 }
 
