@@ -43,3 +43,6 @@ dev = "cargo watch -x 'run-script build-dev'"
 # serves the content of pkg/web-app as a server
 serve = "cargo run -p server"
 serve-watch = "cargo watch -w apps/server -x 'run -p server'"
+
+[build]
+target="wasm32-unknown-unknown"
