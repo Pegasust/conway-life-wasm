@@ -121,7 +121,6 @@ impl Universe {
             .cartesian_product(0..self.width)
             .map(|(y, x)| (x, y, self.neighbor_lives(x, y), self.cells[self.cell_idx(x, y)]))
             .map(|(x, y, live_neighbors, cell)| {
-                if live_neighbors != 0 {console_log!("({}, {}): ({}, {})", x, y, live_neighbors, cell);}
                 match (live_neighbors, cell) {
                     // 1) Any live cell with fewer than 2 live neighbors dies
                     (count, Cell::Alive) if count < 2 => Cell::Dead,
@@ -137,7 +136,6 @@ impl Universe {
             .collect_vec();
         self.stable = next == self.cells;
         self.cells = next;
-        console_log!("Universe:\n{}", self);
     }
 }
 
@@ -243,7 +241,6 @@ impl Universe {
                 let y = top_left_y + y_offset;
                 let idx_safe = self.cell_idx_safe(x, y);
                 self.cells[idx_safe] = v;
-                console_log!("{}, {}: {}", y, x, v);
             }
         }
     }
@@ -268,7 +265,6 @@ impl Universe {
         };
         // uni.loafer(1, 1);
         uni.stable(3, 3);
-        console_log!("Universe: \n{}", uni);
         uni
     }
 
