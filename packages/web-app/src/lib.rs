@@ -263,7 +263,7 @@ impl Universe {
     }
     /// A simple spaceship placement on a given cell. It will modify a given bound
     /// for the loafer, starting from the proper bot-left (x,y).
-    fn loafer(&mut self, mid_x: u32, mid_y: u32) {
+    fn add_loafer(&mut self, mid_x: u32, mid_y: u32) {
         self.render_plaintext(
             r#"
             .OO..O.OO
@@ -280,12 +280,44 @@ impl Universe {
             mid_y,
         )
     }
-    fn stable(&mut self, mid_x: u32, mid_y: u32) {
+
+    fn add_glider(&mut self, mid_x: u32, mid_y: u32) {
+        self.render_plaintext(
+            r#"
+            .O
+            ..O
+            OOO
+            "#,
+            mid_x,
+            mid_y,
+        )
+    }
+
+    fn add_pulsar(&mut self, mid_x: u32, mid_y: u32) {
+        self.render_plaintext(r#"
+        ..OOO...OOO
+        ............
+        O....O.O....O
+        O....O.O....O
+        O....O.O....O
+        ..OOO...OOO
+        ............
+        ..OOO...OOO
+        O....O.O....O
+        O....O.O....O
+        O....O.O....O
+        ............
+        ..OOO...OOO
+        "#, mid_x, mid_y)
+    }
+
+    fn add_stable(&mut self, mid_x: u32, mid_y: u32) {
         for x_offset in 0..3 {
             let idx = self.cell_idx_safe(mid_x + self.width + x_offset - 1, mid_y);
             self.cells[idx] = Cell::Alive
         }
     }
+
     pub fn new() -> Universe {
         utils::set_panic_hook();
         const DEFAULT_WIDTH: u32 = 64;
@@ -299,7 +331,7 @@ impl Universe {
             cells,
             stable: false,
         };
-        uni.loafer(6, 6);
+        uni.add_loafer(6, 6);
         uni
     }
 
@@ -319,7 +351,7 @@ impl Universe {
 
     pub fn set_stable_universe(&mut self) {
         self.reset();
-        self.stable(2, 2);
+        self.add_stable(2, 2);
     }
 
     pub fn render(&self) -> String {

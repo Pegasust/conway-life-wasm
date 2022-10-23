@@ -55,8 +55,10 @@ Finished, status of exit code: 0
 
 ## Idea (most recent to least recent)
 
+- [ ] canvas: shift-click: pulsar
+- [ ] canvas: ctrl-click: glider
 - [x] scene: rand: 1/2 per cell
-- [ ] scene: spaceship
+- [x] scene: spaceship
 - [x] dev.md: cargo-watch
 - [x] dev.md: [cargo-edit](https://github.com/killercup/cargo-edit)
 - [x] dev.md: cargo-generate
@@ -65,6 +67,7 @@ Finished, status of exit code: 0
 
 # Done (most recent to least recent)
 
+- [x] scene: spaceship
 - [x] scene: rand: 1/2 per cell
 - [x] dev.md: cargo-watch
 - [x] dev.md for initial dev lifecycle
