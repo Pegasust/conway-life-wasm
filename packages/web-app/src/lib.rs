@@ -108,6 +108,19 @@ impl Universe {
     pub fn height(&self) -> u32 {
         return self.height;
     }
+    fn reset(&mut self) {
+        self.cells=(0..self.width * self.height).map(|_| Cell::Dead).collect();
+    }
+    pub fn set_width(&mut self, width: u32) {
+        self.width = width;
+        self.reset();
+    }
+
+    pub fn set_height(&mut self, height: u32) {
+        self.height = height;
+        self.reset();
+    }
+
     pub fn cells(&self) -> *const Cell {
         // TODO: Is this even safe?
         return self.cells.as_ptr();
@@ -120,7 +133,7 @@ impl Universe {
         let next = (0..self.height)
             .cartesian_product(0..self.width)
             .map(|(y, x)| (x, y, self.neighbor_lives(x, y), self.cells[self.cell_idx(x, y)]))
-            .map(|(x, y, live_neighbors, cell)| {
+            .map(|(_x, _y, live_neighbors, cell)| {
                 match (live_neighbors, cell) {
                     // 1) Any live cell with fewer than 2 live neighbors dies
                     (count, Cell::Alive) if count < 2 => Cell::Dead,
@@ -225,14 +238,6 @@ impl Universe {
             .map(|s| s.trim().bytes())
             .filter(|s| s.len() > 0),
         );
-        // let loafer = vec![
-        //     vec![Cell::Dead, Cell::Dead, Cell::Dead, Cell::Dead, Cell::Dead, Cell::Dead, Cell::Dead],
-        //     vec![Cell::Dead, Cell::Dead, Cell::Alive, Cell::Dead, Cell::Dead, Cell::Alive, Cell::Dead],
-        //     vec![Cell::Dead, Cell::Alive, Cell::Dead, Cell::Dead, Cell::Dead, Cell::Dead, Cell::Dead],
-        //     vec![Cell::Dead, Cell::Alive, Cell::Dead, Cell::Dead, Cell::Dead, Cell::Alive, Cell::Dead],
-        //     vec![Cell::Dead, Cell::Alive, Cell::Alive, Cell::Alive, Cell::Alive, Cell::Dead, Cell::Dead],
-        //     vec![Cell::Dead, Cell::Dead, Cell::Dead, Cell::Dead, Cell::Dead, Cell::Dead, Cell::Dead],
-        // ];
 
         for y_offset in 0..loafer.len() as u32 {
             for x_offset in 0..loafer[0].len() as u32 {
@@ -255,8 +260,8 @@ impl Universe {
         const DEFAULT_WIDTH: u32 = 64;
         const DEFAULT_HEIGHT: u32 = 64;
         // let mut cells: Vec<Cell> = Self::example_cell(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        // let cells: Vec<Cell> = Self::rand_cell(DEFAULT_WIDTH, DEFAULT_HEIGHT, 0.3);
-        let cells: Vec<Cell> = Self::empty_cell(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        let cells: Vec<Cell> = Self::rand_cell(DEFAULT_WIDTH, DEFAULT_HEIGHT, 0.3);
+        // let cells: Vec<Cell> = Self::empty_cell(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         let mut uni = Universe {
             width: DEFAULT_WIDTH,
             height: DEFAULT_HEIGHT,
@@ -270,5 +275,18 @@ impl Universe {
 
     pub fn render(&self) -> String {
         self.to_string()
+    }
+}
+
+impl Universe {
+    pub fn get_cells(&self) -> &[Cell] {
+        &self.cells
+    }
+    /// Sets the value at given (x, y) to be alive
+    pub fn set_cells(&mut self, alive_locations: &[(u32, u32)]) {
+        for &(x, y) in alive_locations.iter() {
+            let idx = self.cell_idx(x, y);
+            self.cells[idx] = Cell::Alive;
+        }
     }
 }
