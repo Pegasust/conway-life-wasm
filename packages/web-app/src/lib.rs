@@ -70,6 +70,9 @@ impl Universe {
     fn cell_idx(&self, x: u32, y: u32) -> usize {
         (y * self.width + x) as usize
     }
+    fn cell_idx_safe(&self, x: u32, y: u32) -> usize {
+        self.cell_idx(x % self.width, y % self.height)
+    }
 
     /// Counts the number of neighboring cells that are alive
     /// This is helpful to determine the next state of our given `(x, y)`
@@ -80,7 +83,7 @@ impl Universe {
             .cartesian_product([self.width - 1, 0, 1].iter())
             .filter(|(&x, &y)| x != 0 && y != 0)
             .map(|(y_offset, x_offset)| {
-                self.cells[self.cell_idx((x + x_offset) % self.width, (y + y_offset) % self.height)]
+                self.cells[self.cell_idx(x + x_offset, y + y_offset)]
             })
             .fold(0u8, |sum_cum, cell| {
                 sum_cum + if cell == Cell::Alive { 1u8 } else { 0u8 }
@@ -163,20 +166,42 @@ impl Universe {
             .map(|v| if v.unwrap() >= lower_bound {Cell::Dead} else {Cell::Alive})
             .collect()
     }
-    fn loafer(x: u32, y: u32) {
-        
+    /// A simple spaceship placement on a given cell. It will modify a given bound
+    /// for the loafer, starting from the proper bot-left (x,y).
+    fn loafer(&mut self, top_left_x: u32, top_left_y: u32) {
+        let loafer = vec![
+            vec![Cell::Dead, Cell::Dead, Cell::Dead, Cell::Dead, Cell::Dead, Cell::Dead, Cell::Dead],
+            vec![Cell::Dead, Cell::Dead, Cell::Alive, Cell::Dead, Cell::Dead, Cell::Alive, Cell::Dead],
+            vec![Cell::Dead, Cell::Alive, Cell::Dead, Cell::Dead, Cell::Dead, Cell::Dead, Cell::Dead],
+            vec![Cell::Dead, Cell::Alive, Cell::Dead, Cell::Dead, Cell::Dead, Cell::Alive, Cell::Dead],
+            vec![Cell::Dead, Cell::Alive, Cell::Alive, Cell::Alive, Cell::Alive, Cell::Dead, Cell::Dead],
+            vec![Cell::Dead, Cell::Dead, Cell::Dead, Cell::Dead, Cell::Dead, Cell::Dead, Cell::Dead],
+        ];
+
+        console_log!("loafer: height: {}, width: {}", loafer.len(), loafer[0].len());
+        for y_offset in 0..loafer.len() as u32 {
+            for x_offset in 0..loafer[0].len() as u32 {
+                let v = loafer[y_offset as usize][x_offset as usize];
+                let idx_safe = self.cell_idx_safe(top_left_x + x_offset, top_left_y + y_offset);
+                self.cells[idx_safe] = v;
+            }
+        }
     }
     pub fn new() -> Universe {
+        utils::set_panic_hook();
         const DEFAULT_WIDTH: u32 = 64;
         const DEFAULT_HEIGHT: u32 = 64;
         // let mut cells: Vec<Cell> = Self::example_cell(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        let mut cells: Vec<Cell> = Self::rand_cell(DEFAULT_WIDTH, DEFAULT_HEIGHT, 0.3);
-        Universe {
+        // let cells: Vec<Cell> = Self::rand_cell(DEFAULT_WIDTH, DEFAULT_HEIGHT, 0.3);
+        let cells: Vec<Cell> = Self::empty_cell(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        let mut uni = Universe {
             width: DEFAULT_WIDTH,
             height: DEFAULT_HEIGHT,
             cells,
             stable: false
-        }
+        };
+        // uni.loafer(1,1);
+        uni
     }
 
     pub fn render(&self) -> String {
