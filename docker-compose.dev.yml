@@ -1,0 +1,9 @@
+version: '3'
+services:
+  static-server:
+    image: nginx:stable
+    volumes:
+      - "./pkg:/usr/share/nginx/html:ro"
+    restart: unless-stopped
+    ports:
+    - 8080:80

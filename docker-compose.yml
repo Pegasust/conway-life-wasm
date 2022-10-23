@@ -1,0 +1,8 @@
+version: '3'
+services:
+  static-server:
+    build: .
+    restart: unless-stopped
+    ports:
+      - 8080:80
+
