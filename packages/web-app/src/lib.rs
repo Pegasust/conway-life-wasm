@@ -160,17 +160,17 @@ impl Universe {
     fn rand_cell(width: u32, height: u32, alive_prob: f64) -> Vec<Cell> {
         let lower_bound: u64 = ((u64::MAX as f64) * alive_prob) as u64;
         (0..width * height).map(|_| rand_u64())
-            .map(|v| if v.unwrap() >= lower_bound {Cell::Alive} else {Cell::Dead})
+            .map(|v| if v.unwrap() >= lower_bound {Cell::Dead} else {Cell::Alive})
             .collect()
     }
     fn loafer(x: u32, y: u32) {
-
+        
     }
     pub fn new() -> Universe {
         const DEFAULT_WIDTH: u32 = 64;
         const DEFAULT_HEIGHT: u32 = 64;
         // let mut cells: Vec<Cell> = Self::example_cell(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        let mut cells: Vec<Cell> = Self::rand_cell(DEFAULT_WIDTH, DEFAULT_HEIGHT, 0.5);
+        let mut cells: Vec<Cell> = Self::rand_cell(DEFAULT_WIDTH, DEFAULT_HEIGHT, 0.3);
         Universe {
             width: DEFAULT_WIDTH,
             height: DEFAULT_HEIGHT,
