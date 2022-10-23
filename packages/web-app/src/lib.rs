@@ -119,6 +119,7 @@ impl Universe {
     }
     fn reset(&mut self) {
         self.cells=(0..self.width * self.height).map(|_| Cell::Dead).collect();
+        self.stable = false;
     }
     pub fn set_width(&mut self, width: u32) {
         self.width = width;
@@ -133,6 +134,7 @@ impl Universe {
     pub fn toggle_cell(&mut self, x: u32, y: u32) {
         let idx = self.cell_idx(x, y);
         self.cells[idx].toggle();
+        self.stable = false;
     }
 
     pub fn cells(&self) -> *const Cell {
@@ -274,8 +276,8 @@ impl Universe {
         const DEFAULT_WIDTH: u32 = 64;
         const DEFAULT_HEIGHT: u32 = 64;
         // let mut cells: Vec<Cell> = Self::example_cell(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        let cells: Vec<Cell> = Self::rand_cell(DEFAULT_WIDTH, DEFAULT_HEIGHT, 0.3);
-        // let cells: Vec<Cell> = Self::empty_cell(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        // let cells: Vec<Cell> = Self::rand_cell(DEFAULT_WIDTH, DEFAULT_HEIGHT, 0.3);
+        let cells: Vec<Cell> = Self::empty_cell(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         let mut uni = Universe {
             width: DEFAULT_WIDTH,
             height: DEFAULT_HEIGHT,
@@ -285,6 +287,25 @@ impl Universe {
         uni.loafer(0, 0);
         // uni.stable(3, 3);
         uni
+    }
+
+    pub fn set_empty_universe(&mut self) {
+        self.reset();
+    }
+
+    pub fn set_random_universe(&mut self, alive_prob: f64) {
+        self.reset();
+        self.cells = Self::rand_cell(self.width, self.height, alive_prob);
+    }
+
+    pub fn set_27_universe(&mut self) {
+        self.reset();
+        self.cells = Self::example_cell(self.width, self.height);
+    }
+
+    pub fn set_stable_universe(&mut self) {
+        self.reset();
+        self.stable(2, 2);
     }
 
     pub fn render(&self) -> String {

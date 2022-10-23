@@ -126,12 +126,53 @@ async function main() {
     const canvasLeft = (event.clientX - boundingRect.left) * scaleX;
     const canvasTop = (event.clientY - boundingRect.top) * scaleY;
 
-    const cellY = Math.min(Math.floor(canvasTop / (CELL_SIZE + 1)), height -1);
+    const cellY = Math.min(Math.floor(canvasTop / (CELL_SIZE + 1)), height - 1);
     const cellX = Math.min(Math.floor(canvasLeft / (CELL_SIZE + 1)), width - 1);
     universe.toggle_cell(cellX, cellY);
     drawGrid();
     drawCells();
   })
+
+  // Reset the universe
+  document.getElementById("reset").textContent = '↻';
+  const universeSelect = document.getElementById("universe-choice");
+  const universeSelectElem = () => {
+    return universeSelect.options[universeSelect.selectedIndex];
+  };
+  const universeChoiceDropdown = document.getElementById("universe-choice");
+
+  const aliveProbability = document.getElementById("alive-probability");
+  universeChoiceDropdown.addEventListener("change", _event => {
+    const selection = universeSelectElem().value;
+    console.log(`universeChoiceDropdown changed: ${selection}`);
+    switch (selection) {
+      case 'random':
+        aliveProbability.style.display = "block";
+        break;
+      default:
+        aliveProbability.style.display = "none";
+        break;
+    }
+  })
+  document.getElementById("reset").addEventListener("click", _event => {
+    const selection = universeSelectElem().value;
+    switch (selection) {
+      case 'random':
+        const prob = parseFloat(document.getElementById("alive-prob").value);
+        universe.set_random_universe(prob);
+        break;
+      case 'mod-27':
+        universe.set_27_universe();
+        break;
+      case 'empty':
+        universe.set_empty_universe();
+        break;
+      case 'stable':
+        universe.set_stable_universe();
+        break;
+    }
+  });
+
 
 }
 main();
