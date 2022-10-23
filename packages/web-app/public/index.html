@@ -37,6 +37,11 @@
             </div>
             <button id="reset"></button>
         </div>
+        <div style="display: flex; flex-direction: row; justify-content: start; align-items: start; gap: 1px;">
+            <label for="frametime">Frametime (ms)</label>
+            <input type="range" id="frametime-pct" name="frametime" min="0" max="100" step="1" value="0"/>
+            <label id="frametime-ms">ASAP</label>
+        </div>
         <div style="display: flex; flex-direction: column; justify-content: start;">
             <span style="font-size: 1.125rem; line-height: 1.75rem;">
                 &#128161; Adding shortcuts (highest to lowest priority)

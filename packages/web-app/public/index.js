@@ -77,12 +77,21 @@ async function main() {
 
   // Handle the animation: control whether to request for another animation frame
   let animation_id = null;
+  let lastFrame = Date.now();
+  let frameDelayMs = 0;
+  const setFrameDelay = (newFrameDelay) => {
+    frameDelayMs = newFrameDelay;
+  }
   const renderLoop = () => {
-    universe.tick_self();
+    let now = Date.now();
+    if(now - lastFrame >= frameDelayMs) {
+      universe.tick_self();
 
-    drawGrid();
-    drawCells();
+      drawGrid();
+      drawCells();
 
+      lastFrame = now;
+    }
     animation_id = requestAnimationFrame(renderLoop);
   };
 
@@ -179,6 +188,20 @@ async function main() {
         break;
     }
   });
+
+  // Speed slider
+  const frametimeSlider = document.getElementById("frametime-pct");
+  const frametimeDisplay = document.getElementById("frametime-ms");
+  frametimeSlider.addEventListener("change", _event=>{
+    const max_millis = 1000;
+    const percent = parseFloat(frametimeSlider.value);
+    const per10 = percent / 10;
+    const base = 2;
+    const max = Math.pow(base, 10);
+    const actualMs = (Math.pow(base, per10) / max) * max_millis;
+    setFrameDelay(actualMs);
+    frametimeDisplay.textContent = Math.abs(percent) <= 1e-5? "ASAP": `${actualMs.toFixed(3)} ms`;
+  })
 
 
 }
