@@ -91,6 +91,16 @@ impl Universe {
 // Exported interface
 #[wasm_bindgen]
 impl Universe {
+    pub fn width(&self) -> u32 {
+        return self.width
+    }
+    pub fn height(&self) -> u32 {
+        return self.height
+    }
+    pub fn cells(&self) -> *const Cell {
+        // TODO: Is this even safe?
+        return self.cells.as_ptr()
+    }
     pub fn tick_self(&mut self) {
         if self.stable { 
             console_log!("Stable update");
@@ -131,16 +141,36 @@ impl fmt::Display for Universe {
     }
 }
 
+fn rand_u64() -> Result<u64, getrandom::Error> {
+    let mut buf = [0u8; 8];
+    getrandom::getrandom(&mut buf)?;
+    Ok(u64::from_be_bytes(buf))
+}
+
 #[wasm_bindgen]
 impl Universe {
     fn empty_cell(width: u32, height: u32) ->Vec<Cell>{
         (0..width * height).map(|_| Cell::Dead)
             .collect()
     }
+    fn example_cell(width: u32, height: u32) -> Vec<Cell> {
+        (0..width * height).map(|i| if i % 2 == 0 || i % 7 == 0 {Cell::Alive} else {Cell::Dead})
+            .collect()
+    }
+    fn rand_cell(width: u32, height: u32, alive_prob: f64) -> Vec<Cell> {
+        let lower_bound: u64 = ((u64::MAX as f64) * alive_prob) as u64;
+        (0..width * height).map(|_| rand_u64())
+            .map(|v| if v.unwrap() >= lower_bound {Cell::Alive} else {Cell::Dead})
+            .collect()
+    }
+    fn loafer(x: u32, y: u32) {
+
+    }
     pub fn new() -> Universe {
         const DEFAULT_WIDTH: u32 = 64;
-        const DEFAULT_HEIGHT: u32 = 16;
-        let mut cells: Vec<Cell> = Self::empty_cell(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        const DEFAULT_HEIGHT: u32 = 64;
+        // let mut cells: Vec<Cell> = Self::example_cell(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        let mut cells: Vec<Cell> = Self::rand_cell(DEFAULT_WIDTH, DEFAULT_HEIGHT, 0.5);
         Universe {
             width: DEFAULT_WIDTH,
             height: DEFAULT_HEIGHT,
