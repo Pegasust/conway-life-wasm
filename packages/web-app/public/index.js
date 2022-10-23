@@ -1,7 +1,14 @@
-import init, {greet} from "../pkg/web-app";
+import init, {Universe} from "../pkg/web-app";
 
 async function main() {
     await init();
-    greet("world_0");
+    const pre = document.getElementById("canvas");
+    const universe = Universe.new();
+    const renderLoop = ()=>{
+        pre.textContent = universe.render();
+        universe.tick_self();
+        requestAnimationFrame(renderLoop);
+    };
+    requestAnimationFrame(renderLoop);
 }
 main();
