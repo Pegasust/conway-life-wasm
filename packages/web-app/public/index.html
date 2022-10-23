@@ -14,6 +14,10 @@
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
+                gap: 2px;
+            }
+            .grid-dim {
+                width: 32px;
             }
         </style>
     </head>
@@ -21,6 +25,12 @@
         <noscript>This page contains wasm and js content, please enable js in your browser</noscript>
         <canvas id="canvas"></canvas>
         <button id="play-pause"></button>
+        <div style="display: flex; flex-direction: row; align-items: center; justify-content:center; gap: 1px;">
+            <label for="grid-width">Grid Width</label>
+            <input class="grid-dim" id="grid-width" name="grid-width" value="64"/>
+            <label for="grid-height">Grid Height</label>
+            <input class="grid-dim" id="grid-height" name="grid-height" value="64"/>
+        </div>
         <div style="display: flex; flex-direction: row; align-items: center; justify-content: center;
             gap: 2px;
         ">

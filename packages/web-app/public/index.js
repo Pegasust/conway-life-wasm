@@ -12,18 +12,22 @@ async function main() {
   const memory = wasm.memory;
   // Construct the universe, and get its width and height.
   const universe = Universe.new();
-  const width = universe.width();
-  const height = universe.height();
+  let width = universe.width();
+  let height = universe.height();
 
   // Give the canvas room for all of our cells and a 1px border
   // around each of them.
   const canvas = document.getElementById("canvas");
-  canvas.height = (CELL_SIZE + 1) * height + 1;
-  canvas.width = (CELL_SIZE + 1) * width + 1;
 
   // context to interact with our 2D canvas
   const ctx = canvas.getContext('2d');
 
+  const clearGrid = () => {
+    ctx.clearRect(0, 0, canvas.height, canvas.width);
+    canvas.height = (CELL_SIZE + 1) * height + 1;
+    canvas.width = (CELL_SIZE + 1) * width + 1;
+  }
+  clearGrid();
   const drawGrid = () => {
     ctx.beginPath();
     ctx.strokeStyle = GRID_COLOR;
@@ -84,7 +88,7 @@ async function main() {
   }
   const renderLoop = () => {
     let now = Date.now();
-    if(now - lastFrame >= frameDelayMs) {
+    if (now - lastFrame >= frameDelayMs) {
       universe.tick_self();
 
       drawGrid();
@@ -138,9 +142,9 @@ async function main() {
     const cellY = Math.min(Math.floor(canvasTop / (CELL_SIZE + 1)), height - 1);
     const cellX = Math.min(Math.floor(canvasLeft / (CELL_SIZE + 1)), width - 1);
 
-    if(event.ctrlKey) {
+    if (event.ctrlKey) {
       universe.add_glider(cellX, cellY);
-    } else if(event.shiftKey) {
+    } else if (event.shiftKey) {
       universe.add_pulsar(cellX, cellY);
     } else {
       universe.toggle_cell(cellX, cellY);
@@ -192,7 +196,7 @@ async function main() {
   // Speed slider
   const frametimeSlider = document.getElementById("frametime-pct");
   const frametimeDisplay = document.getElementById("frametime-ms");
-  frametimeSlider.addEventListener("change", _event=>{
+  frametimeSlider.addEventListener("change", _event => {
     const max_millis = 1000;
     const percent = parseFloat(frametimeSlider.value);
     const per10 = percent / 10;
@@ -200,9 +204,27 @@ async function main() {
     const max = Math.pow(base, 10);
     const actualMs = (Math.pow(base, per10) / max) * max_millis;
     setFrameDelay(actualMs);
-    frametimeDisplay.textContent = Math.abs(percent) <= 1e-5? "ASAP": `${actualMs.toFixed(3)} ms`;
+    frametimeDisplay.textContent = Math.abs(percent) <= 1e-5 ? "ASAP" : `${actualMs.toFixed(3)} ms`;
   })
 
+  // Set grid width/height (this also restarts the grid)
+  const gridWidth = document.getElementById("grid-width");
+  const gridHeight = document.getElementById("grid-height");
+  const gridDim = [[gridWidth, (w) => {
+    universe.set_width(w);
+    width = w;
+    clearGrid();
+  }, ()=>width], [gridHeight, (w) => {
+    universe.set_height(w)
+    height = w;
+    clearGrid();
+  }, ()=>height]];
+  gridDim.map(([dim, setter, getter]) => {
+    dim.addEventListener("change", _event => {
+      setter(parseInt(dim.value));
+    });
+    dim.value = getter();
+  })
 
 }
 main();
