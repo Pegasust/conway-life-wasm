@@ -252,8 +252,8 @@ impl Universe {
     }
     pub fn new() -> Universe {
         utils::set_panic_hook();
-        const DEFAULT_WIDTH: u32 = 16;
-        const DEFAULT_HEIGHT: u32 = 16;
+        const DEFAULT_WIDTH: u32 = 64;
+        const DEFAULT_HEIGHT: u32 = 64;
         // let mut cells: Vec<Cell> = Self::example_cell(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         // let cells: Vec<Cell> = Self::rand_cell(DEFAULT_WIDTH, DEFAULT_HEIGHT, 0.3);
         let cells: Vec<Cell> = Self::empty_cell(DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -263,8 +263,8 @@ impl Universe {
             cells,
             stable: false,
         };
-        // uni.loafer(1, 1);
-        uni.stable(3, 3);
+        uni.loafer(0, 0);
+        // uni.stable(3, 3);
         uni
     }
 
