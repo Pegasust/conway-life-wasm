@@ -118,7 +118,7 @@ impl Universe {
         return self.height;
     }
     fn reset(&mut self) {
-        self.cells=(0..self.width * self.height).map(|_| Cell::Dead).collect();
+        self.cells = (0..self.width * self.height).map(|_| Cell::Dead).collect();
         self.stable = false;
     }
     pub fn set_width(&mut self, width: u32) {
@@ -148,7 +148,14 @@ impl Universe {
         }
         let next = (0..self.height)
             .cartesian_product(0..self.width)
-            .map(|(y, x)| (x, y, self.neighbor_lives(x, y), self.cells[self.cell_idx(x, y)]))
+            .map(|(y, x)| {
+                (
+                    x,
+                    y,
+                    self.neighbor_lives(x, y),
+                    self.cells[self.cell_idx(x, y)],
+                )
+            })
             .map(|(_x, _y, live_neighbors, cell)| {
                 match (live_neighbors, cell) {
                     // 1) Any live cell with fewer than 2 live neighbors dies
@@ -235,10 +242,29 @@ impl Universe {
             })
             .collect()
     }
+    fn render_plaintext(&mut self, plain_text: &str, mid_x: u32, mid_y: u32) {
+        let cell_2d = cell_from_plaintext(
+            plain_text
+                .split("\n")
+                .map(|s| s.trim().bytes())
+                .filter(|s| s.len() > 0),
+        );
+        let height = cell_2d.len() as u32;
+        let width = cell_2d[0].len() as u32;
+        for y_offset in 0..height {
+            for x_offset in 0..width {
+                let v = cell_2d[y_offset as usize][x_offset as usize];
+                let x = mid_x + x_offset + self.width - (width + 1) / 2;
+                let y = mid_y + y_offset + self.height - (height + 1) / 2;
+                let idx_safe = self.cell_idx_safe(x, y);
+                self.cells[idx_safe] = v;
+            }
+        }
+    }
     /// A simple spaceship placement on a given cell. It will modify a given bound
     /// for the loafer, starting from the proper bot-left (x,y).
-    fn loafer(&mut self, top_left_x: u32, top_left_y: u32) {
-        let loafer = cell_from_plaintext(
+    fn loafer(&mut self, mid_x: u32, mid_y: u32) {
+        self.render_plaintext(
             r#"
             .OO..O.OO
             O..O..OO.
@@ -249,25 +275,14 @@ impl Universe {
             .....O...
             ......O..
             .......OO
-            "#
-            .split("\n")
-            .map(|s| s.trim().bytes())
-            .filter(|s| s.len() > 0),
-        );
-
-        for y_offset in 0..loafer.len() as u32 {
-            for x_offset in 0..loafer[0].len() as u32 {
-                let v = loafer[y_offset as usize][x_offset as usize];
-                let x = top_left_x + x_offset;
-                let y = top_left_y + y_offset;
-                let idx_safe = self.cell_idx_safe(x, y);
-                self.cells[idx_safe] = v;
-            }
-        }
+            "#,
+            mid_x,
+            mid_y,
+        )
     }
-    fn stable(&mut self, top_left_x: u32, top_left_y: u32) {
+    fn stable(&mut self, mid_x: u32, mid_y: u32) {
         for x_offset in 0..3 {
-            let idx = self.cell_idx_safe(top_left_x + x_offset, top_left_y);
+            let idx = self.cell_idx_safe(mid_x + self.width + x_offset - 1, mid_y);
             self.cells[idx] = Cell::Alive
         }
     }
@@ -284,8 +299,7 @@ impl Universe {
             cells,
             stable: false,
         };
-        uni.loafer(0, 0);
-        // uni.stable(3, 3);
+        uni.loafer(6, 6);
         uni
     }
 
