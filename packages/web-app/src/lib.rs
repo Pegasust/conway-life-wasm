@@ -263,7 +263,7 @@ impl Universe {
     }
     /// A simple spaceship placement on a given cell. It will modify a given bound
     /// for the loafer, starting from the proper bot-left (x,y).
-    fn add_loafer(&mut self, mid_x: u32, mid_y: u32) {
+    pub fn add_loafer(&mut self, mid_x: u32, mid_y: u32) {
         self.render_plaintext(
             r#"
             .OO..O.OO
@@ -281,10 +281,10 @@ impl Universe {
         )
     }
 
-    fn add_glider(&mut self, mid_x: u32, mid_y: u32) {
+    pub fn add_glider(&mut self, mid_x: u32, mid_y: u32) {
         self.render_plaintext(
             r#"
-            .O
+            .O.
             ..O
             OOO
             "#,
@@ -293,25 +293,25 @@ impl Universe {
         )
     }
 
-    fn add_pulsar(&mut self, mid_x: u32, mid_y: u32) {
+    pub fn add_pulsar(&mut self, mid_x: u32, mid_y: u32) {
         self.render_plaintext(r#"
-        ..OOO...OOO
-        ............
+        ..OOO...OOO..
+        .............
         O....O.O....O
         O....O.O....O
         O....O.O....O
-        ..OOO...OOO
-        ............
-        ..OOO...OOO
+        ..OOO...OOO..
+        .............
+        ..OOO...OOO..
         O....O.O....O
         O....O.O....O
         O....O.O....O
-        ............
-        ..OOO...OOO
+        .............
+        ..OOO...OOO..
         "#, mid_x, mid_y)
     }
 
-    fn add_stable(&mut self, mid_x: u32, mid_y: u32) {
+    pub fn add_stable(&mut self, mid_x: u32, mid_y: u32) {
         for x_offset in 0..3 {
             let idx = self.cell_idx_safe(mid_x + self.width + x_offset - 1, mid_y);
             self.cells[idx] = Cell::Alive

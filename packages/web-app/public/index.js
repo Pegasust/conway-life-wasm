@@ -128,7 +128,14 @@ async function main() {
 
     const cellY = Math.min(Math.floor(canvasTop / (CELL_SIZE + 1)), height - 1);
     const cellX = Math.min(Math.floor(canvasLeft / (CELL_SIZE + 1)), width - 1);
-    universe.toggle_cell(cellX, cellY);
+
+    if(event.ctrlKey) {
+      universe.add_glider(cellX, cellY);
+    } else if(event.shiftKey) {
+      universe.add_pulsar(cellX, cellY);
+    } else {
+      universe.toggle_cell(cellX, cellY);
+    }
     drawGrid();
     drawCells();
   })

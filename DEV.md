@@ -55,8 +55,8 @@ Finished, status of exit code: 0
 
 ## Idea (most recent to least recent)
 
-- [ ] canvas: shift-click: pulsar
-- [ ] canvas: ctrl-click: glider
+- [x] canvas: shift-click: pulsar
+- [x] canvas: ctrl-click: glider
 - [x] scene: rand: 1/2 per cell
 - [x] scene: spaceship
 - [x] dev.md: cargo-watch
@@ -67,6 +67,8 @@ Finished, status of exit code: 0
 
 # Done (most recent to least recent)
 
+- [x] canvas: shift-click: pulsar
+- [x] canvas: ctrl-click: glider
 - [x] scene: spaceship
 - [x] scene: rand: 1/2 per cell
 - [x] dev.md: cargo-watch
