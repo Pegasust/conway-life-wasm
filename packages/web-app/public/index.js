@@ -21,6 +21,7 @@ async function main() {
   canvas.height = (CELL_SIZE + 1) * height + 1;
   canvas.width = (CELL_SIZE + 1) * width + 1;
 
+  // context to interact with our 2D canvas
   const ctx = canvas.getContext('2d');
 
   const drawGrid = () => {
@@ -42,10 +43,12 @@ async function main() {
     ctx.stroke();
   };
 
+  // simple helper to get index based on our model
   const getIndex = (row, column) => {
     return row * width + column;
   };
 
+  // fill the cells that are alive
   const drawCells = () => {
     const cellsPtr = universe.cells();
     const cells = new Uint8Array(memory.buffer, cellsPtr, width * height);
@@ -71,6 +74,8 @@ async function main() {
 
     ctx.stroke();
   };
+
+  // Handle the animation: control whether to request for another animation frame
   let animation_id = null;
   const renderLoop = () => {
     universe.tick_self();
@@ -81,6 +86,7 @@ async function main() {
     animation_id = requestAnimationFrame(renderLoop);
   };
 
+  // Handle to whether play or pause game
   const playPauseButton = document.getElementById("play-pause");
 
   const play = () => {
@@ -105,11 +111,27 @@ async function main() {
     }
   });
 
+  // Bootstarp & begin the rendering loop
   drawGrid();
   drawCells();
   // requestAnimationFrame(renderLoop);
   play();
 
+  // On click on canvas, calculate which cell is clicked and toggle dead/alive status
+  canvas.addEventListener("click", event => {
+    const boundingRect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / boundingRect.width;
+    const scaleY = canvas.height / boundingRect.height;
+
+    const canvasLeft = (event.clientX - boundingRect.left) * scaleX;
+    const canvasTop = (event.clientY - boundingRect.top) * scaleY;
+
+    const cellY = Math.min(Math.floor(canvasTop / (CELL_SIZE + 1)), height -1);
+    const cellX = Math.min(Math.floor(canvasLeft / (CELL_SIZE + 1)), width - 1);
+    universe.toggle_cell(cellX, cellY);
+    drawGrid();
+    drawCells();
+  })
 
 }
 main();

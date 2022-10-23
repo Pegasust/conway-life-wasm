@@ -68,6 +68,15 @@ impl fmt::Display for Cell {
     }
 }
 
+impl Cell {
+    fn toggle(&mut self) {
+        *self = match *self {
+            Cell::Dead => Cell::Alive,
+            Cell::Alive => Cell::Dead,
+        }
+    }
+}
+
 #[wasm_bindgen]
 pub struct Universe {
     width: u32,
@@ -119,6 +128,11 @@ impl Universe {
     pub fn set_height(&mut self, height: u32) {
         self.height = height;
         self.reset();
+    }
+
+    pub fn toggle_cell(&mut self, x: u32, y: u32) {
+        let idx = self.cell_idx(x, y);
+        self.cells[idx].toggle();
     }
 
     pub fn cells(&self) -> *const Cell {
